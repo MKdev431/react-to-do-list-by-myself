@@ -1,10 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import Form from "./components/Form";
+import List from "./components/List";
 
 function App() {
-  const [tasks, setTasks] = useState([]);
+  const [tasks, setTasks] = useState(() => {
+    const localValue = localStorage.getItem("ITEMS");
+    if (localValue == null) return [];
+    return JSON.parse(localValue);
+  });
   // const [completedTasks, setCompletedTasks] = useState([]);
+
+  useEffect(() => {
+    localStorage.setItem("ITEMS", JSON.stringify(tasks));
+  }, [tasks]);
 
   function addTask(title) {
     setTasks(currentTasks => {
@@ -32,33 +41,12 @@ function App() {
       <h1>To-do List</h1>
       <Form addTask={addTask} />
       <p>Tasks:</p>
-      {tasks.length === 0 && "No tasks"}
-      <ul>
-        {tasks.map(task => {
-          return (
-            <li key={task.id}>
-              <label
-                htmlFor=""
-                className="task-label"
-              >
-                <input
-                  type="checkbox"
-                  className="checkbox-input"
-                  checked={task.completed}
-                  onChange={e => toggleTask(task.id, e.target.checked)}
-                />
-                {task.title}
-              </label>
-              <button
-                onClick={() => deleteTask(task.id)}
-                className="delete-button"
-              >
-                Delete
-              </button>
-            </li>
-          );
-        })}
-      </ul>
+
+      <List
+        tasks={tasks}
+        toggleTask={toggleTask}
+        deleteTask={deleteTask}
+      />
       {/* <hr />
       <p>Done tasks:</p>
       <ul>
