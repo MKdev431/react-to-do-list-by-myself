@@ -1,21 +1,15 @@
 import { useState } from "react";
 import "./App.css";
+import Form from "./components/Form";
 
 function App() {
-  const [value, setValue] = useState("");
   const [tasks, setTasks] = useState([]);
   // const [completedTasks, setCompletedTasks] = useState([]);
 
-  function handleSubmit(e) {
-    e.preventDefault();
-    if (value.length >= 3) {
-      setTasks(currentTasks => {
-        return [...currentTasks, { id: crypto.randomUUID(), title: value, completed: false }];
-      });
-      setValue("");
-    } else {
-      alert("Enter task name - not shorter than three characters");
-    }
+  function addTask(title) {
+    setTasks(currentTasks => {
+      return [...currentTasks, { id: crypto.randomUUID(), title, completed: false }];
+    });
   }
 
   function toggleTask(id, completed) {
@@ -36,22 +30,7 @@ function App() {
   return (
     <div className="app">
       <h1>To-do List</h1>
-      <form onSubmit={handleSubmit}>
-        <label
-          htmlFor="text"
-          className="text-label"
-        >
-          Enter task
-          <input
-            className="text-input"
-            type="text"
-            id="text"
-            value={value}
-            onChange={e => setValue(e.target.value)}
-          />
-        </label>
-        <button className="task-button">Add Task</button>
-      </form>
+      <Form addTask={addTask} />
       <p>Tasks:</p>
       {tasks.length === 0 && "No tasks"}
       <ul>
